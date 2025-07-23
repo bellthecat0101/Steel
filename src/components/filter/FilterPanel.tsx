@@ -13,12 +13,7 @@ export default function FilterPanel() {
       </div>
       {/* 手機版篩選按鈕 */}
       <div className="md:hidden w-full fixed top-0 left-0 bg-white shadow py-2 flex justify-between items-center px-2">
-        <div>
-          商品清單{" "}
-          <span className="text-gray-400 text-xs">
-            (電腦版拉成手機版請刷新載入)
-          </span>
-        </div>
+        <div>商品清單</div>
         <div className="flex justify-end px-4">
           <SetOrder />
           <button onClick={() => setMobileOpen(true)} className="p-2 ">
