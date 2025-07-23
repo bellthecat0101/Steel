@@ -1,0 +1,82 @@
+import { useEffect, useRef } from "react";
+import { FixedSizeList as List } from "react-window";
+import { useItemStore } from "../../store/itemStore";
+import type { Item } from "../../types";
+import Pagination from "../common/Pagination";
+import SetOrder from "./SetSort";
+
+const ROW_HEIGHT = 50;
+
+export default function DesktopTable({ items }: { items: Item[] }) {
+  const { filteredItems, pageSize, currentPage, setPageSize, setCurrentPage } =
+    useItemStore();
+  const PAGE_SIZE_OPTIONS = [10, 20, 50, 100, 1000];
+  const outerRef = useRef<HTMLDivElement>(null);
+  const totalPages = Math.ceil(filteredItems.length / pageSize);
+
+  useEffect(() => {
+    outerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [items]);
+
+  const Row = ({
+    index,
+    style,
+  }: {
+    index: number;
+    style: React.CSSProperties;
+  }) => {
+    const item = items[index];
+    return (
+      <div
+        style={style}
+        className="px-4 py-1 border-b border-[#ebeef5] text-sm grid grid-cols-4 items-center hover:bg-[#eaf2ff] bg-white"
+      >
+        <div>{item.name}</div>
+        <div>{item.category}</div>
+        <div className="font-bold">${item.price}</div>
+        <div className={item.inStock ? "text-green-600" : "text-[#fe6c6f]"}>
+          {item.inStock ? "有現貨" : "缺貨"}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className="border border-[#ebebeb] rounded overflow-hidden">
+        {/* 表頭 */}
+        <div className="grid grid-cols-4 bg-[#f5f7fa] text-sm font-medium text-[#606266] px-4 py-2 sticky top-0 z-10">
+          <div className="flex items-center justify-start">商品名稱</div>
+          <div className="flex items-center justify-start">類別</div>
+          <div className="flex items-center justify-start gap-2">
+            價格 <SetOrder />
+          </div>
+          <div className="flex items-center justify-start">庫存</div>
+        </div>
+
+        <List
+          height={500}
+          itemCount={items.length}
+          itemSize={ROW_HEIGHT}
+          width="100%"
+          outerRef={outerRef}
+        >
+          {Row}
+        </List>
+      </div>
+      {/*表單*/}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filteredItems.length}
+        pageSize={pageSize}
+        pageSizeOptions={PAGE_SIZE_OPTIONS}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={(newSize) => {
+          setPageSize(newSize);
+          setCurrentPage(1);
+        }}
+      />
+    </>
+  );
+}

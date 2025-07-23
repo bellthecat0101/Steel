@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@layer components {
+  .inputStyle {
+    @apply h-8 px-3 border border-[#dcdfe6]  rounded focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-sm placeholder:text-gray-500 text-sm;
+  }
+  .inputBorder {
+    @apply border border-[#dcdfe6]  rounded focus:outline-none  text-sm;
+  }
+  .mbButton {
+    @apply border rounded text-xs text-gray-700 border-gray-300 bg-white shadow p-2;
+  }
+}
+
+body {
+  color: #1f2f3d;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", SimSun, sans-serif;
+}

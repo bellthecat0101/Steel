@@ -1,0 +1,37 @@
+import { useEffect, useState } from "react";
+import Filter from "./components/filter/FilterPanel";
+import RwdTable from "./components/table/RwdTable";
+import { useItemStore } from "./store/itemStore";
+
+export default function App() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const { allItems, filters, setAllItems } = useItemStore();
+
+  useEffect(() => {
+    fetch("/data/items.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setAllItems(data);
+      });
+  }, []);
+
+  const categories = Array.from(new Set(allItems.map((item) => item.category)));
+
+  return (
+    <div className="p-3">
+      <div className="overflow-x-auto rounded shadow-[0_2px_12px_0_rgba(0,0,0,0.1)] p-5 border border-[#ebebeb]">
+        <h1 className="hidden md:inline-block text-[25px]">商品清單</h1>
+        {/*篩選*/}
+        <Filter
+          filters={filters}
+          categories={categories}
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+        />
+        {/*表單*/}
+        <RwdTable />
+      </div>
+    </div>
+  );
+}
