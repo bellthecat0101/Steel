@@ -11,7 +11,7 @@ export default function FilterPanel() {
       <div className="hidden md:block w-full mb-4">
         <FilterFormContent  />
       </div>
-      {/* 手機版篩選按鈕 - 動態 fixed */}
+      {/* 手機版篩選按鈕 */}
       <div className="md:hidden w-full fixed top-0 left-0 bg-white shadow py-2 flex justify-between items-center px-2">
         <h1>商品清單</h1>
         <div className="flex justify-end px-4">
