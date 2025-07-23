@@ -40,7 +40,7 @@ export default function DesktopTable() {
         <div>{item.category}</div>
         <div className="font-bold">${item.price}</div>
         <div className={item.inStock ? "text-green-600" : "text-[#fe6c6f]"}>
-          {item.inStock ? "有現貨" : "缺貨"}
+          {item.inStock ? "是" : "否"}
         </div>
       </div>
     );
