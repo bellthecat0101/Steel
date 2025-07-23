@@ -1,42 +1,44 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useItemStore } from "../../store/itemStore";
 import type { Item } from "../../types";
 import Loading from "../common/Loading";
 import ScrollToTop from "../common/ScrollToTop";
 const BATCH_SIZE = 20;
-export default function MobileTable({ items }: { items: Item[] }) {
-  const [visibleItems, setVisibleItems] = useState<Item[]>([]);
+export default function MobileTable() {
+  const { visibleItems } = useItemStore();
+  const [tableItems, settableItems] = useState<Item[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const loadMore = useCallback(() => {
     if (!hasMore) return;
 
-    setVisibleItems((prev) => {
+    settableItems((prev) => {
       const startIndex = prev.length;
       const endIndex = startIndex + BATCH_SIZE;
 
-      const nextBatch = items.slice(startIndex, endIndex);
+      const nextBatch = visibleItems.slice(startIndex, endIndex);
       const newVisible = [...prev, ...nextBatch];
 
       //是否載完
-      if (newVisible.length >= items.length) {
+      if (newVisible.length >= visibleItems.length) {
         setHasMore(false);
       }
 
       return newVisible;
     });
-  }, [items, hasMore]);
+  }, [visibleItems, hasMore]);
 
   // items 改變，重置狀態
   useEffect(() => {
-    setVisibleItems([]);
+    settableItems([]);
     setHasMore(true);
-  }, [items]);
+  }, [visibleItems]);
 
   // 初始載入第一批
   useEffect(() => {
     loadMore();
-  }, [items, loadMore]);
+  }, [visibleItems, loadMore]);
 
   // 無限載入
   useEffect(() => {
@@ -53,31 +55,37 @@ export default function MobileTable({ items }: { items: Item[] }) {
   }, [loadMore]);
   return (
     <div className="divide-y divide-[#ebeef5] pt-[50px]">
-      {visibleItems.map((item, idx) => (
-        <div
-          key={idx}
-          className="p-2 bg-white text-sm grid grid-cols-2 gap-y-2"
-        >
-          <div>
-            <span className="text-[#909399]">商品名稱：</span> {item.name}
-          </div>
-          <div>
-            <span className="text-[#909399]">類別：</span> {item.category}
-          </div>
-          <div>
-            <span className="text-[#909399]">價格：</span>{" "}
-            <span className="font-bold">${item.price}</span>
-          </div>
-          <div>
-            <span className="text-[#909399]">庫存：</span>{" "}
-            <span
-              className={item.inStock ? "text-green-600" : "text-[#fe6c6f]"}
-            >
-              {item.inStock ? "有現貨" : "缺貨"}
-            </span>
-          </div>
+      {tableItems.length === 0 ? (
+        <div className="text-center py-20 text-gray-500 text-sm h-[calc(100vh-50px)]">
+          無搜尋結果
         </div>
-      ))}
+      ) : (
+        tableItems.map((item, idx) => (
+          <div
+            key={idx}
+            className="p-2 bg-white text-sm grid grid-cols-2 gap-y-2"
+          >
+            <div>
+              <span className="text-[#909399]">商品：</span> {item.name}
+            </div>
+            <div>
+              <span className="text-[#909399]">類別：</span> {item.category}
+            </div>
+            <div>
+              <span className="text-[#909399]">價格：</span>{" "}
+              <span className="font-bold">${item.price}</span>
+            </div>
+            <div>
+              <span className="text-[#909399]">庫存：</span>{" "}
+              <span
+                className={item.inStock ? "text-green-600" : "text-[#fe6c6f]"}
+              >
+                {item.inStock ? "有現貨" : "缺貨"}
+              </span>
+            </div>
+          </div>
+        ))
+      )}
 
       {hasMore && (
         <div

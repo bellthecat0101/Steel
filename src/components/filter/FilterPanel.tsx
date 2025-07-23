@@ -1,49 +1,15 @@
 import { Menu, X } from "lucide-react";
+import { useItemStore } from "../../store/itemStore";
 import SetOrder from "../table/SetSort";
 import FilterFormContent from "./FilterFormContent";
 // 電腦與手機 篩選器
-export default function FilterPanel({
-  filters,
-  categories,
-  mobileOpen,
-  setMobileOpen,
-}: {
-  filters: any;
-  categories: string[];
-  mobileOpen: boolean;
-  setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const {
-    name,
-    setName,
-    minPriceInput,
-    setMinPriceInput,
-    maxPriceInput,
-    setMaxPriceInput,
-    selectedCategories,
-    setSelectedCategories,
-    inStockOnly,
-    setInStockOnly,
-  } = filters;
-
-  const commonProps = {
-    name,
-    setName,
-    minPriceInput,
-    setMinPriceInput,
-    maxPriceInput,
-    setMaxPriceInput,
-    selectedCategories,
-    setSelectedCategories,
-    inStockOnly,
-    setInStockOnly,
-    categories,
-  };
+export default function FilterPanel() {
+  const { mobileOpen, setMobileOpen } = useItemStore();
   return (
     <>
       {/* 桌機版 */}
       <div className="hidden md:block w-full mb-4">
-        <FilterFormContent {...commonProps} />
+        <FilterFormContent  />
       </div>
       {/* 手機版篩選按鈕 - 動態 fixed */}
       <div className="md:hidden w-full fixed top-0 left-0 bg-white shadow py-2 flex justify-between items-center px-2">
@@ -56,7 +22,7 @@ export default function FilterPanel({
         </div>
       </div>
 
-      {/* 手機版抽屜 */}
+      {/* 手機版 */}
       <div
         className={`fixed inset-0 z-50 transition-opacity duration-300 ${
           mobileOpen
@@ -77,7 +43,7 @@ export default function FilterPanel({
               <X className="w-6 h-6 text-gray-500" />
             </button>
           </div>
-          <FilterFormContent {...commonProps} />
+          <FilterFormContent  />
         </div>
       </div>
     </>

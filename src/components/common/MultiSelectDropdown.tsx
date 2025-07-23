@@ -1,5 +1,5 @@
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
 interface MultiSelectDropdownProps {
   options: string[];
   selected: string[];
@@ -12,7 +12,6 @@ export default function MultiSelectDropdown({
   onChange,
 }: MultiSelectDropdownProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +21,6 @@ export default function MultiSelectDropdown({
         !containerRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
-        setSearchTerm("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -41,61 +39,53 @@ export default function MultiSelectDropdown({
     onChange(selected.filter((o) => o !== option));
   };
 
-  // 過濾選項根據搜尋字串
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div className="relative w-full max-w-md" ref={containerRef}>
-      {/* 標籤框 */}
+      {/* 選擇框 + 下拉按鈕 */}
       <div
-        className="flex flex-wrap items-center md:w-[200px] min-h-[32px] px-2 py-1 border border-gray-300 rounded bg-white cursor-text text-sm"
-        onClick={() => setDropdownOpen(true)}
+        className="flex items-center justify-between md:w-[200px] min-h-[32px] px-2 py-1 border border-gray-300 rounded bg-white text-sm cursor-pointer"
+        onClick={() => setDropdownOpen((prev) => !prev)}
       >
-        {selected.map((item) => (
-          <span
-            key={item}
-            className="flex items-center px-1 text-xs bg-[#f4f4f5] text-[#909399] border border-[#e9e9eb] rounded-sm mr-1 "
-          >
-            {item}
-            <button
-              type="button"
-              className="ml-1 text-[#909399] cursor-pointer hover:text-blue-700"
-              onClick={(e) => {
-                e.stopPropagation();
-                removeOption(item);
-              }}
-            >
-              ✕
-            </button>
-          </span>
-        ))}
-
-        {/* 當選項全選時不顯示 input */}
-        {selected.length < filteredOptions.length && (
-          <input
-            type="text"
-            className="flex-1 min-w-[40px] h-5 outline-none bg-transparent placeholder:text-gray-500"
-            placeholder={selected.length === 0 ? "搜尋類別（可複選）" : ""}
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              if (!dropdownOpen) setDropdownOpen(true);
-            }}
-            onFocus={() => setDropdownOpen(true)}
-          />
-        )}
+        <div className="flex flex-wrap items-center gap-1">
+          {selected.length === 0 ? (
+            <span className="text-gray-400 text-sm">請選擇類別</span>
+          ) : (
+            selected.map((item) => (
+              <span
+                key={item}
+                className="flex items-center px-1 text-xs bg-[#f4f4f5] text-[#909399] border border-[#e9e9eb] rounded-sm"
+              >
+                {item}
+                <button
+                  type="button"
+                  className="ml-1 text-[#909399] hover:text-blue-700"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeOption(item);
+                  }}
+                >
+                  ✕
+                </button>
+              </span>
+            ))
+          )}
+        </div>
+        {/* 展開按鈕 */}
+        <ChevronDown
+          className={`w-4 h-4 text-gray-500 transform transition-transform duration-300 origin-center ${
+            dropdownOpen ? "rotate-180" : "rotate-0"
+          }`}
+        />
       </div>
 
       {/* 下拉選單 */}
       {dropdownOpen && (
         <div className="absolute z-11 w-full mt-1 bg-white border border-gray-300 rounded shadow max-h-60 overflow-auto">
-          {filteredOptions.length === 0 ? (
-            <div className="px-3 py-2 text-gray-500">無符合條件的選項</div>
+          {options.length === 0 ? (
+            <div className="px-3 py-2 text-gray-500">無選項</div>
           ) : (
             <ul>
-              {filteredOptions.map((option) => (
+              {options.map((option) => (
                 <li
                   key={option}
                   onClick={() => toggleOption(option)}

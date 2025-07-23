@@ -1,22 +1,27 @@
 import { useEffect, useRef } from "react";
 import { FixedSizeList as List } from "react-window";
 import { useItemStore } from "../../store/itemStore";
-import type { Item } from "../../types";
 import Pagination from "../common/Pagination";
 import SetOrder from "./SetSort";
 
 const ROW_HEIGHT = 50;
 
-export default function DesktopTable({ items }: { items: Item[] }) {
-  const { filteredItems, pageSize, currentPage, setPageSize, setCurrentPage } =
-    useItemStore();
+export default function DesktopTable() {
+  const {
+    filteredItems,
+    visibleItems,
+    pageSize,
+    currentPage,
+    setPageSize,
+    setCurrentPage,
+  } = useItemStore();
   const PAGE_SIZE_OPTIONS = [10, 20, 50, 100, 1000];
   const outerRef = useRef<HTMLDivElement>(null);
   const totalPages = Math.ceil(filteredItems.length / pageSize);
 
   useEffect(() => {
     outerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-  }, [items]);
+  }, [visibleItems]);
 
   const Row = ({
     index,
@@ -25,7 +30,7 @@ export default function DesktopTable({ items }: { items: Item[] }) {
     index: number;
     style: React.CSSProperties;
   }) => {
-    const item = items[index];
+    const item = visibleItems[index];
     return (
       <div
         style={style}
@@ -54,15 +59,21 @@ export default function DesktopTable({ items }: { items: Item[] }) {
           <div className="flex items-center justify-start">庫存</div>
         </div>
 
-        <List
-          height={500}
-          itemCount={items.length}
-          itemSize={ROW_HEIGHT}
-          width="100%"
-          outerRef={outerRef}
-        >
-          {Row}
-        </List>
+        {visibleItems.length === 0 ? (
+          <div className="h-[500px] flex items-center justify-center text-gray-500">
+            無搜尋結果
+          </div>
+        ) : (
+          <List
+            height={500}
+            itemCount={visibleItems.length}
+            itemSize={ROW_HEIGHT}
+            width="100%"
+            outerRef={outerRef}
+          >
+            {Row}
+          </List>
+        )}
       </div>
       {/*表單*/}
       <Pagination

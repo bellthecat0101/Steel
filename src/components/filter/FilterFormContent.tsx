@@ -2,13 +2,10 @@ import { useState } from "react";
 import { useItemStore } from "../../store/itemStore";
 import MultiSelectDropdown from "../common/MultiSelectDropdown";
 // 電腦與手機 篩選器相同內容
-export default function FilterFormContent({
-  categories,
-}: {
-  categories: string[];
-}) {
-  const setFilters = useItemStore((s) => s.setFilters);
+export default function FilterFormContent() {
+  const { allItems, setMobileOpen, setFilters } = useItemStore();
 
+  const categories = Array.from(new Set(allItems.map((item) => item.category)));
   const [form, setForm] = useState({
     name: "",
     minPrice: "",
@@ -24,6 +21,7 @@ export default function FilterFormContent({
       maxPrice: parseFloat(form.maxPrice) || Infinity,
       inStockOnly: form.inStockOnly,
     });
+    setMobileOpen?.(false);
   };
 
   const onResetFilters = () => {

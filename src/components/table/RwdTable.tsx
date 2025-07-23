@@ -5,7 +5,7 @@ import DesktopTable from "./DesktopTable";
 import MobileTable from "./MobileTable";
 
 export default function RwdTable() {
-  const { visibleItems, isLoading } = useItemStore();
+  const { isLoading } = useItemStore();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -23,17 +23,5 @@ export default function RwdTable() {
     );
   }
 
-  if (visibleItems.length === 0) {
-    return (
-      <div className="h-[500px] flex justify-center items-center text-gray-500">
-        無搜尋結果
-      </div>
-    );
-  }
-
-  return isMobile ? (
-    <MobileTable items={visibleItems} />
-  ) : (
-    <DesktopTable items={visibleItems} />
-  );
+  return isMobile ? <MobileTable /> : <DesktopTable />;
 }
