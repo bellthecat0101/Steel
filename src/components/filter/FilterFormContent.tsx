@@ -132,7 +132,7 @@ export default function FilterFormContent() {
         <button
           type="button"
           onClick={onApplyFilters}
-          className="border rounded md:text-sm text-gray-700 border-gray-300 bg-blue-400 text-white px-2 py-1 hover:bg-blue-600 cursor-pointer mr-3"
+          className="border rounded md:text-sm  border-gray-300 bg-blue-400 text-white px-2 py-1 hover:bg-blue-600 cursor-pointer mr-3"
         >
           搜尋
         </button>
@@ -141,7 +141,7 @@ export default function FilterFormContent() {
         <button
           type="button"
           onClick={onResetFilters}
-          className="border rounded md:text-sm text-gray-700 border-gray-300 bg-white px-2 py-1 hover:bg-blue-600 cursor-pointer"
+          className="border rounded md:text-sm text-gray-700 border-gray-300 bg-white px-2 py-1 hover:bg-gray-200 cursor-pointer"
         >
           清除
         </button>

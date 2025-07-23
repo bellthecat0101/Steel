@@ -56,7 +56,7 @@ export default function DesktopTable() {
           <div className="flex items-center justify-start gap-2">
             價格 <SetOrder />
           </div>
-          <div className="flex items-center justify-start">庫存</div>
+          <div className="flex items-center justify-start">有庫存</div>
         </div>
 
         {visibleItems.length === 0 ? (

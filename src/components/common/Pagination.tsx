@@ -23,7 +23,7 @@ export default function Pagination({
   return (
     <div className="mt-4 text-sm flex text-gray-500 justify-between items-center ">
       {/* 跳頁下拉 */}
-      <label className="flex items-center gap-2 hidden md:flex">
+      <label className="items-center gap-2 hidden md:flex">
         跳到：
         <select
           className="inputBorder p-1"
@@ -79,7 +79,7 @@ export default function Pagination({
       )}
 
       {/* 筆數選擇 */}
-      <div className="flex items-center gap-2 hidden md:flex">
+      <div className=" items-center gap-2 hidden md:flex">
         <div className="pr-2">
           共:
           <span className="font-medium text-[#5e6d82] px-2">{totalItems}</span>

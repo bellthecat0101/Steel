@@ -88,11 +88,11 @@ export default function MobileTable() {
               <span className="font-bold">${item.price}</span>
             </div>
             <div>
-              <span className="text-[#909399]">庫存：</span>{" "}
+              <span className="text-[#909399]">有庫存：</span>{" "}
               <span
                 className={item.inStock ? "text-green-600" : "text-[#fe6c6f]"}
               >
-                {item.inStock ? "是" : "否"}
+                {item.inStock ? "是庫存" : "無庫存"}
               </span>
             </div>
           </div>
