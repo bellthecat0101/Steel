@@ -5,7 +5,9 @@ import MultiSelectDropdown from "../common/MultiSelectDropdown";
 export default function FilterFormContent() {
   const { allItems, setMobileOpen, setFilters } = useItemStore();
 
-  const categories = Array.from(new Set(allItems.map((item) => item.category)));
+  const categories = Array.from(
+    new Set(allItems.map((item) => item.category))
+  ).sort((a, b) => a.localeCompare(b));
   const [form, setForm] = useState({
     name: "",
     minPrice: "",
@@ -73,17 +75,20 @@ export default function FilterFormContent() {
 
       {/* 價格區間 */}
       <div className="flex flex-col gap-1 w-full md:w-auto">
-        <label className="text-sm text-gray-600">價格區間</label>
+        <label className="text-sm text-gray-600">
+          價格區間 <span className="text-xs text-gray-400">(僅限數字)</span>
+        </label>
         <div className="flex gap-2">
           <input
             type="text"
             inputMode="numeric"
+            pattern="[0-9]*"
             placeholder="最低"
             value={form.minPrice}
             onChange={(e) =>
               setForm((prev) => ({
                 ...prev,
-                minPrice: e.target.value.trim(),
+                minPrice: e.target.value.replace(/[^0-9]/g, ""), // 僅保留數字
               }))
             }
             className="inputStyle w-full md:w-[100px]"

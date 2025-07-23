@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 interface MultiSelectDropdownProps {
   options: string[];
@@ -43,29 +43,27 @@ export default function MultiSelectDropdown({
     <div className="relative w-full max-w-md" ref={containerRef}>
       {/* 選擇框 + 下拉按鈕 */}
       <div
-        className="flex items-center justify-between md:w-[200px] min-h-[32px] px-2 py-1 border border-gray-300 rounded bg-white text-sm cursor-pointer"
+        className="flex items-center justify-between md:w-[250px] min-h-[32px] px-2 py-1 border border-gray-300 rounded bg-white text-sm cursor-pointer"
         onClick={() => setDropdownOpen((prev) => !prev)}
       >
         <div className="flex flex-wrap items-center gap-1">
           {selected.length === 0 ? (
-            <span className="text-gray-400 text-sm">請選擇類別</span>
+            <span className="text-sm text-gray-500">請選擇類別</span>
           ) : (
             selected.map((item) => (
               <span
                 key={item}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeOption(item);
+                }}
                 className="flex items-center px-1 text-xs bg-[#f4f4f5] text-[#909399] border border-[#e9e9eb] rounded-sm"
               >
                 {item}
-                <button
-                  type="button"
+                <X
+                  size={15}
                   className="ml-1 text-[#909399] hover:text-blue-700"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeOption(item);
-                  }}
-                >
-                  ✕
-                </button>
+                />
               </span>
             ))
           )}

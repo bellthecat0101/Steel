@@ -4,13 +4,28 @@ import RwdTable from "./components/table/RwdTable";
 import { useItemStore } from "./store/itemStore";
 
 export default function App() {
-  const { setAllItems } = useItemStore();
+  const { setAllItems, setLoading } = useItemStore();
 
   useEffect(() => {
+    setLoading(true);
+
+    // 模擬載入時間
+    const MIN_LOADING_TIME = 600;
+    const startTime = Date.now();
+
     fetch(import.meta.env.BASE_URL + "data/items.json")
       .then((res) => res.json())
       .then((data) => {
-        setAllItems(data);
+        const elapsed = Date.now() - startTime;
+        const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
+
+        setTimeout(() => {
+          setAllItems(data);
+          setLoading(false);
+        }, delay);
+      })
+      .catch(() => {
+        setLoading(false);
       });
   }, []);
 

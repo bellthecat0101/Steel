@@ -3,46 +3,54 @@ import { useItemStore } from "../../store/itemStore";
 import type { Item } from "../../types";
 import Loading from "../common/Loading";
 import ScrollToTop from "../common/ScrollToTop";
+
 const BATCH_SIZE = 20;
+
 export default function MobileTable() {
   const { visibleItems } = useItemStore();
-  const [tableItems, settableItems] = useState<Item[]>([]);
+  const [tableItems, setTableItems] = useState<Item[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [showEmpty, setShowEmpty] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const loadMore = useCallback(() => {
-    if (!hasMore) return;
+    if (!hasMore || isLoadingMore) return;
 
-    settableItems((prev) => {
+    setIsLoadingMore(true);
+    setTableItems((prev) => {
       const startIndex = prev.length;
       const endIndex = startIndex + BATCH_SIZE;
-
       const nextBatch = visibleItems.slice(startIndex, endIndex);
       const newVisible = [...prev, ...nextBatch];
 
-      //是否載完
       if (newVisible.length >= visibleItems.length) {
         setHasMore(false);
       }
 
       return newVisible;
     });
-  }, [visibleItems, hasMore]);
+    setIsLoadingMore(false);
+  }, [visibleItems, hasMore, isLoadingMore]);
 
-  // items 改變，重置狀態
+  // 資料變動時初始化
   useEffect(() => {
-    settableItems([]);
+    setTableItems([]);
     setHasMore(true);
+    setShowEmpty(false);
   }, [visibleItems]);
 
-  // 初始載入第一批
+  // 首次載入
   useEffect(() => {
-    loadMore();
+    if (visibleItems.length > 0) {
+      loadMore();
+    }
   }, [visibleItems, loadMore]);
 
-  // 無限載入
+  // Intersection Observer 處理
   useEffect(() => {
-    if (!sentinelRef.current) return;
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !hasMore) return;
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
@@ -50,19 +58,23 @@ export default function MobileTable() {
       }
     });
 
-    observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
-  }, [loadMore]);
+    observer.observe(sentinel);
+    return () => {
+      if (sentinel) observer.unobserve(sentinel);
+      observer.disconnect();
+    };
+  }, [loadMore, hasMore]);
+
   return (
     <div className="divide-y divide-[#ebeef5] pt-[50px]">
-      {tableItems.length === 0 ? (
+      {tableItems.length === 0 && showEmpty ? (
         <div className="text-center py-20 text-gray-500 text-sm h-[calc(100vh-50px)]">
           無搜尋結果
         </div>
       ) : (
         tableItems.map((item, idx) => (
           <div
-            key={idx}
+            key={`${idx}-${item.name}`}
             className="p-2 bg-white text-sm grid grid-cols-2 gap-y-2"
           >
             <div>
@@ -95,6 +107,7 @@ export default function MobileTable() {
           <Loading />
         </div>
       )}
+
       <ScrollToTop />
     </div>
   );

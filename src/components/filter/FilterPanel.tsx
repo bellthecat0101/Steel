@@ -9,11 +9,16 @@ export default function FilterPanel() {
     <>
       {/* 桌機版 */}
       <div className="hidden md:block w-full mb-4">
-        <FilterFormContent  />
+        <FilterFormContent />
       </div>
       {/* 手機版篩選按鈕 */}
       <div className="md:hidden w-full fixed top-0 left-0 bg-white shadow py-2 flex justify-between items-center px-2">
-        <h1>商品清單</h1>
+        <div>
+          商品清單{" "}
+          <span className="text-gray-400 text-xs">
+            (電腦版拉成手機版請刷新載入)
+          </span>
+        </div>
         <div className="flex justify-end px-4">
           <SetOrder />
           <button onClick={() => setMobileOpen(true)} className="p-2 ">
@@ -43,7 +48,7 @@ export default function FilterPanel() {
               <X className="w-6 h-6 text-gray-500" />
             </button>
           </div>
-          <FilterFormContent  />
+          <FilterFormContent />
         </div>
       </div>
     </>
