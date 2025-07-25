@@ -26,7 +26,7 @@ export default function SetOrder() {
       </div>
 
       {/* 手機版 價格升序 / 價格降序 */}
-      <div className="flex md:hidden gap-2 mt-2">
+      <div className="flex md:hidden gap-2 ">
         <button
           className={`mbButton ${
             sortOrder === "asc" ? "bg-blue-500 text-white" : " text-gray-600"

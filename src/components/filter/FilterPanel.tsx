@@ -14,7 +14,7 @@ export default function FilterPanel() {
       {/* 手機版篩選按鈕 */}
       <div className="md:hidden w-full fixed top-0 left-0 bg-white shadow py-2 flex justify-between items-center px-2">
         <div>商品清單</div>
-        <div className="flex justify-end px-4">
+        <div className="flex justify-center items-center ">
           <SetOrder />
           <button onClick={() => setMobileOpen(true)} className="p-2 ">
             <Menu />
