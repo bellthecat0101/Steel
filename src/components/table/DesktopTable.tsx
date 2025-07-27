@@ -3,8 +3,10 @@ import { FixedSizeList as List } from "react-window";
 import { useItemStore } from "../../store/itemStore";
 import Pagination from "../common/Pagination";
 import SetOrder from "./SetSort";
-
-const ROW_HEIGHT = 50;
+// 頁數 小於 500 原生dom
+// 頁數 大於 500 react window
+const ROW_HEIGHT = 45;
+const USE_VIRTUAL_SCROLL = 500;
 
 export default function DesktopTable() {
   const {
@@ -15,10 +17,10 @@ export default function DesktopTable() {
     setPageSize,
     setCurrentPage,
   } = useItemStore();
-  const PAGE_SIZE_OPTIONS = [10, 20, 50, 100, 1000];
+  const PAGE_SIZE_OPTIONS = [10, 20, 50, 100, 500, 1000, 5000];
   const outerRef = useRef<HTMLDivElement>(null);
   const totalPages = Math.ceil(filteredItems.length / pageSize);
-
+  const useVirtual = visibleItems.length >= USE_VIRTUAL_SCROLL;
   useEffect(() => {
     outerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }, [visibleItems]);
@@ -63,9 +65,9 @@ export default function DesktopTable() {
           <div className="h-[500px] flex items-center justify-center text-gray-500">
             無搜尋結果
           </div>
-        ) : (
+        ) : useVirtual ? (
           <List
-            height={500}
+            height={450}
             itemCount={visibleItems.length}
             itemSize={ROW_HEIGHT}
             width="100%"
@@ -73,6 +75,24 @@ export default function DesktopTable() {
           >
             {Row}
           </List>
+        ) : (
+          <div className="h-[450px] overflow-y-auto" ref={outerRef}>
+            {visibleItems.map((item, index) => (
+              <div
+                key={index}
+                className="px-4 py-3 border-b border-[#ebeef5] text-sm grid grid-cols-4 items-center hover:bg-[#eaf2ff] bg-white"
+              >
+                <div>{item.name}</div>
+                <div>{item.category}</div>
+                <div className="font-bold">${item.price}</div>
+                <div
+                  className={item.inStock ? "text-green-600" : "text-[#fe6c6f]"}
+                >
+                  {item.inStock ? "是" : "否"}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
       {/*表單*/}
