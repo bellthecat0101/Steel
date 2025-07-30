@@ -12,14 +12,13 @@ export default function App() {
     // 模擬載入時間
     const MIN_LOADING_TIME = 600;
     const startTime = Date.now();
-
+    let timeoutId: number | null = null;
     fetch(import.meta.env.BASE_URL + "data/items.json")
       .then((res) => res.json())
       .then((data) => {
         const elapsed = Date.now() - startTime;
         const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
-
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           setAllItems(data);
           setLoading(false);
         }, delay);
@@ -27,6 +26,11 @@ export default function App() {
       .catch(() => {
         setLoading(false);
       });
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
   return (
